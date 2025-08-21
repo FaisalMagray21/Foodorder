@@ -22,6 +22,7 @@ function Home() {
       setCategory(list);
     }
   }
+
   let items = useSelector((state) => state.cart);
   let subtotal = items.reduce(
     (total, item) => total + item.price * item.qty,
@@ -29,30 +30,25 @@ function Home() {
   );
   let deliveryfee = 50;
   let taxes = (subtotal * 0.5) / 100;
-  let total = 0;
-  if (subtotal > 0) {
-    total = subtotal + deliveryfee + taxes;
-  } else {
-    total = 0;
-  }
-  //console.log(subtotal);
+  let total = subtotal > 0 ? subtotal + deliveryfee + taxes : 0;
+
   return (
     <div className="w-full bg-slate-200 min-h-screen">
       <Nav />
 
-      {/* Show Categories only if input is empty */}
+      {/* Categories Section (Responsive Grid) */}
       {!input && (
-        <div className="flex flex-wrap justify-center items-center">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4">
           {Categories.map((category) => (
             <div
               key={category.id}
-              className="justify-center items-center h-36 w-36 bg-white m-2 rounded-lg hover:shadow-lg hover:bg-green-300"
+              className="flex flex-col justify-center items-center h-32 sm:h-36 w-full bg-white rounded-lg hover:shadow-lg hover:bg-green-300 cursor-pointer transition duration-300"
               onClick={() => filter(category.name)}
             >
-              <div className="text-5xl text-green-500 mt-3 ml-5 mb-3 mr-4">
+              <div className="text-4xl sm:text-5xl text-green-500">
                 {category.image}
               </div>
-              <p className="text-black font-bold ml-4 text-[20px]">
+              <p className="text-black font-bold text-sm sm:text-lg mt-2">
                 {category.name}
               </p>
             </div>
@@ -60,7 +56,8 @@ function Home() {
         </div>
       )}
 
-      <div className="flex flex-wrap justify-center items-center">
+      {/* Food Items Section (Responsive Flex/Grid) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
         {category.map((food) => (
           <Card
             key={food.id}
@@ -72,13 +69,19 @@ function Home() {
           />
         ))}
       </div>
+
+      {/* Cart Sidebar (Responsive: Full width on mobile, sidebar on desktop) */}
       <div
-        className={` w-fit md:w-[40vw] h-[100%] bg-white fixed bottom-0 right-0 p-4 duration-1000 overflow-auto  ${showcart ? "block " : "hidden "}`}
+        className={`fixed bottom-0 right-0 w-full sm:w-[80%] md:w-[40vw] h-[90%] sm:h-full bg-white shadow-lg p-4 duration-500 overflow-auto z-50 ${
+          showcart ? "block" : "hidden"
+        }`}
       >
-        <header className="w-[100%]   flex justify-between items-center px-4">
-          <span className="text-green-500 text-[18px]">order items</span>
+        <header className="w-full flex justify-between items-center px-2 sm:px-4">
+          <span className="text-green-500 text-lg sm:text-xl font-semibold">
+            Order Items
+          </span>
           <RxCross2
-            className="text-green-500 text-[18px] w-6 h-6 cursor-pointer d"
+            className="text-green-500 text-xl sm:text-2xl cursor-pointer"
             onClick={() => setShowcart(false)}
           />
         </header>
@@ -88,7 +91,7 @@ function Home() {
             <>
               {items.map((item) => (
                 <Card2
-                  //id={item.id}
+                  key={item.id}
                   name={item.name}
                   price={item.price}
                   image={item.image}
@@ -97,32 +100,31 @@ function Home() {
                 />
               ))}
 
-              <div className="w-full border-t-2 border-gray-400 mt-7 p-4 bg-gray-100 rounded-lg shadow-md">
-                <div className="flex justify-between text-lg font-semibold text-gray-700">
+              {/* Totals */}
+              <div className="w-full border-t-2 border-gray-300 mt-6 p-4 bg-gray-100 rounded-lg shadow-md">
+                <div className="flex justify-between text-base sm:text-lg font-semibold text-gray-700">
                   <span>Subtotal:</span>
                   <span className="text-green-600">{subtotal} PKR</span>
                 </div>
 
-                {items.length > 0 && (
-                  <div className="flex justify-between text-lg text-gray-600 mt-2">
-                    <span>Delivery Fee:</span>
-                    <span className="text-green-600">{deliveryfee} PKR</span>
-                  </div>
-                )}
+                <div className="flex justify-between text-base sm:text-lg text-gray-600 mt-2">
+                  <span>Delivery Fee:</span>
+                  <span className="text-green-600">{deliveryfee} PKR</span>
+                </div>
 
-                <div className="flex justify-between text-lg text-gray-600 mt-2">
+                <div className="flex justify-between text-base sm:text-lg text-gray-600 mt-2">
                   <span>Taxes (0.5%):</span>
                   <span className="text-green-600">{taxes.toFixed(2)} PKR</span>
                 </div>
 
-                <div className="flex justify-between text-xl font-bold text-gray-800 border-t-2 border-gray-400 mt-4 pt-3">
+                <div className="flex justify-between text-lg sm:text-xl font-bold text-gray-800 border-t-2 border-gray-400 mt-4 pt-3">
                   <span>Total:</span>
                   <span className="text-green-700">{total.toFixed(2)} PKR</span>
                 </div>
               </div>
 
               <button
-                className="w-full p-3 rounded-lg bg-green-300 text-gray-700 hover:bg-green-400 mt-4"
+                className="w-full p-3 rounded-lg bg-green-400 text-white font-semibold hover:bg-green-500 mt-4 transition"
                 onClick={() => {
                   toast("Order successfully placed");
                 }}
