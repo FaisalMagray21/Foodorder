@@ -19,7 +19,7 @@ function Nav() {
       );
       setCategory(list);
     }
-  }, [input]);
+  }, [input, category, setCategory, setInput]);
 
   let items = useSelector((state) => state.cart);
 
